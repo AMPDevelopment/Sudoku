@@ -4,54 +4,66 @@ import java.awt.event.ActionEvent;
 import javax.swing.*;
 
 public class Gui implements ActionListener{
-    JButton buttonOK, buttonGen, buttonClear;
-    JTextField tf3;
+    JButton buttonOK, buttonGen, buttonClear, buttonCor;
     JTextField[][] textField;
     public Gui(){
         JFrame newJFrame = new JFrame();
         newJFrame.setTitle("Sudoku GUI");
-        textField = new JTextField[9][9];
+        newJFrame.setSize(400,400);
+
         JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(10,9));
+        textField = new JTextField[9][9];
 
         for (int y = 0; y < 9; y++){
             for (int x = 0; x < 9; x++){
                 textField[x][y] = new JTextField();
-                newJFrame.add(textField[x][y]);
+                panel.add(textField[x][y]);
             }
         }
 
-        newJFrame.setLayout(new GridLayout(10,9));
-        newJFrame.setSize(600,400);
-
+        JPanel panel2 = new JPanel();
+        panel2.setLayout(new FlowLayout(FlowLayout.RIGHT));
         buttonOK = new JButton("OK");
-        panel.add(buttonOK);
+        panel2.add(buttonOK);
 
         buttonGen = new JButton("Generate");
-        panel.add(buttonGen);
+        panel2.add(buttonGen);
 
         buttonClear = new JButton("Clear");
-        panel.add(buttonClear);
+        panel2.add(buttonClear);
 
-        newJFrame.add(buttonGen);
-        newJFrame.add(buttonClear);
+        buttonCor = new JButton("Correct");
+        panel2.add(buttonCor);
+
         buttonOK.addActionListener(this);
         buttonClear.addActionListener(this);
         buttonGen.addActionListener(this);
-        newJFrame.add(panel);
+        buttonCor.addActionListener(this);
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.add(panel);
+        mainPanel.add(panel2);
+        newJFrame.add(mainPanel);
         newJFrame.setVisible(true);
 
     }
-    public static void main(String[] args) {
-      new Gui();
-    }
-    private void SolveGame(){
+
+    private void solveGame(){
         for (int y = 0; y < 9; y++){
             for (int x = 0; x < 9; x++){
                 textField[x][y].setBackground(Color.red);
             }
         }
     }
-    private void ClearGame() {
+    private void checkGame(){
+        for (int y = 0; y < 9; y++){
+            for (int x = 0; x < 9; x++){
+                textField[x][y].setBackground(Color.red);
+            }
+        }
+    }
+    private void clearGame() {
         for (int y = 0; y < 9; y++){
             for (int x = 0; x < 9; x++){
                 textField[x][y].setText("");
@@ -59,7 +71,7 @@ public class Gui implements ActionListener{
             }
         }
     }
-    private void GenerateGame() {
+    private void generateGame() {
         for (int y = 0; y < 9; y++){
             for (int x = 0; x < 9; x++){
                 textField[x][y].setText("zahl");
@@ -67,17 +79,23 @@ public class Gui implements ActionListener{
         }
     }
 
+    public static void main(String[] args) {
+      new Gui();
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==buttonOK){
-            SolveGame();
+            solveGame();
         }
         if(e.getSource()==buttonClear){
-            ClearGame();
+            clearGame();
         }
         if(e.getSource()==buttonGen){
-            GenerateGame();
+            generateGame();
         }
-
+        if(e.getSource()==buttonCor){
+            checkGame();
+        }
     }
 }
