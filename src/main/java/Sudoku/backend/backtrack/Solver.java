@@ -1,4 +1,4 @@
-package Sudoku.backend;
+package Sudoku.backend.backtrack;
 
 import Sudoku.models.Board;
 

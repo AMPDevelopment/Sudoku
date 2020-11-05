@@ -1,10 +1,9 @@
 package Sudoku.models;
 
-import Sudoku.backend.Solver;
+import Sudoku.backend.backtrack.Remover;
+import Sudoku.backend.backtrack.Solver;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Dictionary;
 import java.util.List;
 
 public class Board {
@@ -14,17 +13,23 @@ public class Board {
 
     public Board() {
         this.initBoard();
+        this.clear(this.board);
     }
 
     public void initBoard() {
-        this.board = new ArrayList<>();
-        for (int i = 0; i < DIMENSION; i++) {
-            board.set(i, Arrays.asList(new Field[DIMENSION]));
-        }
-    }
+        this.board = Arrays.asList(
+            Arrays.asList(new Field[DIMENSION]),
+            Arrays.asList(new Field[DIMENSION]),
+            Arrays.asList(new Field[DIMENSION]),
+            Arrays.asList(new Field[DIMENSION]),
+            Arrays.asList(new Field[DIMENSION]),
+            Arrays.asList(new Field[DIMENSION]),
+            Arrays.asList(new Field[DIMENSION]),
+            Arrays.asList(new Field[DIMENSION]),
+            Arrays.asList(new Field[DIMENSION])
+        );
 
-    public void solveBoard() throws Exception {
-        new Solver(this);
+        // Todo: Simplify the creation of the arrays of fields
     }
 
     public List<List<Field>> getBoard() {
@@ -33,6 +38,10 @@ public class Board {
 
     public Field getField(int x, int y) {
         return this.board.get(x).get(y);
+    }
+
+    public void resetField(int x, int y) {
+        this.board.get(x).get(y).setValue(0);
     }
 
     public Sector getSector(int column, int row) throws Exception {
@@ -99,12 +108,24 @@ public class Board {
         this.board.get(x).get(y).setValue(value);
     }
 
+    public void solve() throws Exception {
+        new Solver(this);
+    }
+
+    public void remover(int amountToRemove) throws Exception {
+        new Remover(this, amountToRemove);
+    }
+
     public void clear(List<List<Field>> board) {
         for (int x = 0; x < DIMENSION; x++) {
             for (int y = 0; y < DIMENSION; y++) {
                 board.get(x).set(y, new Field());
             }
         }
+    }
+
+    public void generate() {
+
     }
 
     public Board clone() {

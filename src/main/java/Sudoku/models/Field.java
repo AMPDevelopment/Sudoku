@@ -5,14 +5,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 public class Field {
     private int value;
 
-    public static final int DIMENSION = 9;
-
     public Field() {
         this.value = 0;
-    }
-
-    public Field(int value) {
-        this.value = value;
     }
 
     /*
@@ -48,5 +42,10 @@ public class Field {
 
         Field field = (Field) object;
         return new EqualsBuilder().append(field.getValue(), this.value).isEquals();
+    }
+
+    @Override
+    public String toString() {
+        return "" + this.value;
     }
 }
