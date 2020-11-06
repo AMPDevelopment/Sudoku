@@ -86,7 +86,7 @@ public class Sudoku implements ActionListener{
         }
     }
     private void clear() {
-        this.board.clear(this.board.getBoard());
+        this.board.clear();
         for (int y = 0; y < 9; y++){
             for (int x = 0; x < 9; x++){
                 textField[x][y].setText(this.board.getBoard().get(x).get(y).toString());
