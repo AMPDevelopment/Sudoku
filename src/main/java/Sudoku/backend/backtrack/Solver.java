@@ -13,19 +13,19 @@ public class Solver {
     }
 
     private boolean solver(Board board) throws Exception {
-        for (int x = 0; x < 9; x++) {
-            for (int y = 0; y < 9; y++) {
-                if (board.get(x, y) == 0) {
+        for (int row = 0; row < 9; row++) {
+            for (int column = 0; column < 9; column++) {
+                if (board.get(row, column) == 0) {
                     List<Integer> range = IntStream.range(1, 10).boxed().collect(Collectors.toList());
                     Collections.shuffle(range);
                     for (int value : range) {
-                        board.set(x, y, value);
-                        if (board.get(x, y) == value) {
+                        board.set(row, column, value);
+                        if (board.get(row, column) == value) {
                             if (this.solver(board)) {
                                 return true;
                             }
                             else {
-                                board.set(x, y, 0);
+                                board.set(row, column, 0);
                             }
                         }
                     }

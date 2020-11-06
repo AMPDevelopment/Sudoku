@@ -3,7 +3,6 @@ package Sudoku.backend.backtrack;
 import Sudoku.models.Board;
 
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -36,11 +35,11 @@ public class Remover {
             int row = i / 9;
             int column = i % 9;
             currentAmountPossibleBoards = 0;
-            int temp = this.boardClone.get(column, row);
-            this.boardClone.resetField(column, row);
+            int temp = this.boardClone.get(row, column);
+            this.boardClone.resetField(row, column);
             this.checkAmountCombinations(this.boardClone);
             if (currentAmountPossibleBoards > 1) {
-                this.boardClone.set(column, row, temp);
+                this.boardClone.set(row, column, temp);
             }
             else {
                 counter++;
@@ -49,19 +48,19 @@ public class Remover {
     }
 
     private boolean checkAmountCombinations(Board board) throws Exception {
-        for (int column = 0; column < DIMENSION; column++) {
-            for (int row = 0; row < DIMENSION; row++) {
-                if (board.get(column, row) == 0) {
+        for (int row = 0; row < DIMENSION; row++) {
+            for (int column = 0; column < DIMENSION; column++) {
+                if (board.get(row, column) == 0) {
                     List<Integer> range = IntStream.range(1, 10).boxed().collect(Collectors.toList());
                     Collections.shuffle(range);
                     for (int value : range) {
-                        board.set(column, row, value);
-                        if (board.get(column, row) == value) {
+                        board.set(row, column, value);
+                        if (board.get(row, column) == value) {
                             if (this.checkAmountCombinations(board)) {
                                 return true;
                             }
                             else {
-                                board.set(column, row, 0);
+                                board.set(row, column, 0);
                             }
                         }
                     }
@@ -76,10 +75,10 @@ public class Remover {
     }
 
     private void setBoardToClone() throws Exception {
-        for (int column = 0; column < DIMENSION; column++) {
-            for (int row = 0; row < DIMENSION; row++) {
-                if (this.boardClone.get(column, row) == 0) {
-                    this.board.resetField(column, row);
+        for (int row = 0; row < DIMENSION; row++) {
+            for (int column = 0; column < DIMENSION; column++) {
+                if (this.boardClone.get(row, column) == 0) {
+                    this.board.resetField(row, column);
                 }
             }
         }

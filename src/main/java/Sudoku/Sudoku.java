@@ -7,10 +7,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
 
+import static Sudoku.models.Board.DIMENSION;
+
 public class Sudoku implements ActionListener{
     JButton buttonCheck, buttonSolve, buttonGenerate, buttonClear;
-    JTextField tf3;
-    JTextField[][] textField;
+    JTextField[][] fields;
 
     private Board board;
 
@@ -27,13 +28,13 @@ public class Sudoku implements ActionListener{
 
         JPanel panel = new JPanel();
 
-        textField = new JTextField[9][9];
+        fields = new JTextField[9][9];
 
-        for (int y = 0; y < 9; y++){
-            for (int x = 0; x < 9; x++){
-                textField[x][y] = new JTextField();
-                newJFrame.add(textField[x][y]);
-                textField[x][y].setText(this.board.getBoard().get(x).get(y).toString());
+        for (int row = 0; row < 9; row++){
+            for (int column = 0; column < 9; column++){
+                fields[row][column] = new JTextField();
+                newJFrame.add(fields[row][column]);
+                fields[row][column].setText(this.board.getBoard().get(row).get(column).toString());
             }
         }
 
@@ -67,38 +68,39 @@ public class Sudoku implements ActionListener{
 
     private void solve() throws Exception {
         int amountToRemove = 0;
-        for (int y = 0; y < 9; y++){
-            for (int x = 0; x < 9; x++){
-                if (textField[x][y].getText() == "0") {
+        for (int row = 0; row < 9; row++){
+            for (int column = 0; column < 9; column++){
+                if (fields[row][column].getText().contains("0")) {
                     amountToRemove++;
                 }
+                this.board.set(row, column, Integer.parseInt(fields[row][column].getText()));
             }
         }
+        System.out.println(amountToRemove);
 
         this.board.solve();
         this.board.remover(amountToRemove);
 
-        // Todo: Does not work so far kinda sucks but whatever...
-        for (int y = 0; y < 9; y++){
-            for (int x = 0; x < 9; x++){
-                textField[x][y].setText(this.board.getBoard().get(x).get(y).toString());
+        for (int row = 0; row < DIMENSION; row++){
+            for (int column = 0; column < DIMENSION; column++){
+                fields[row][column].setText(this.board.getBoard().get(row).get(column).toString());
             }
         }
     }
     private void clear() {
         this.board.clear();
-        for (int y = 0; y < 9; y++){
-            for (int x = 0; x < 9; x++){
-                textField[x][y].setText(this.board.getBoard().get(x).get(y).toString());
-                textField[x][y].setBackground(Color.white);
+        for (int row = 0; row < 9; row++){
+            for (int column = 0; column < 9; column++){
+                fields[row][column].setText(this.board.getBoard().get(row).get(column).toString());
+                fields[row][column].setBackground(Color.white);
             }
         }
     }
 
     private void generate() {
         this.board.generate(); // Todo: Generate random game
-        for (int y = 0; y < 9; y++){
-            for (int x = 0; x < 9; x++){
+        for (int row = 0; row < 9; row++){
+            for (int column = 0; column < 9; column++){
             }
         }
     }

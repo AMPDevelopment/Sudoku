@@ -36,8 +36,8 @@ public class Board {
     }
 
     /**
-     * Gets a Sudoku board.
-     * @return Returns this board.
+     * Gets a clone of this board.
+     * @return Returns a cloned version of this board.
      */
     public List<List<Field>> getBoard() {
         return this.clone().board;
@@ -45,39 +45,39 @@ public class Board {
 
     /**
      * Gets the field by coordinates.
-     * @param x Represents the x coordinate (column).
-     * @param y Represents the y coordinate (row).
+     * @param row Represents the y coordinate (row).
+     * @param column Represents the y coordinate (column).
      * @return Returns a field.
      */
-    public Field getField(int x, int y) {
-        return this.board.get(x).get(y);
+    public Field getField(int row, int column) {
+        return this.board.get(row).get(column);
     }
 
     /**
      * Resets the field to the default value.
-     * @param x Represents the x coordinate (column).
-     * @param y Represents the y coordinate (row).
+     * @param row Represents the y coordinate (row).
+     * @param column Represents the x coordinate (column).
      */
-    public void resetField(int x, int y) {
-        this.board.get(x).get(y).setValue(0);
+    public void resetField(int row, int column) {
+        this.board.get(row).get(column).setValue(0);
     }
 
     /**
      * Gets the sector in which the coordinates points to with all fields.
-     * @param x Represents the x coordinate (column).
-     * @param y Represents the y coordinate (row).
+     * @param row Represents the y coordinate (row).
+     * @param column Represents the x coordinate (column).
      * @return Returns the sector with all fields.
      * @throws Exception
      */
-    public Sector getSector(int x, int y) throws Exception {
-        int sectorIndex = this.getSectorIndex(x, y);
-        int boxColumn = (sectorIndex / 3) * 3;
-        int boxRow = (sectorIndex % 3) * 3;
+    public Sector getSector(int row, int column) throws Exception {
+        int sectorIndex = this.getSectorIndex(row, column);
+        int boxRow = (sectorIndex / 3) * 3;
+        int boxColumn = (sectorIndex % 3) * 3;
         int fieldIndex = 0;
 
         Field[] fields = new Field[DIMENSION];
-        for (int i = boxColumn; i <= boxColumn + 2; i++) {
-            for (int j = boxRow; j <= boxRow +2; j++) {
+        for (int i = boxRow; i <= boxRow + 2; i++) {
+            for (int j = boxColumn; j <= boxColumn +2; j++) {
                 fields[fieldIndex] = this.board.get(i).get(j);
                 fieldIndex++;
             }
@@ -86,20 +86,20 @@ public class Board {
         return new Sector(Arrays.asList(fields));
     }
 
-    private int getSectorIndex(int x, int y) {
-        return x / 3 + (y / 3) * 3;
+    private int getSectorIndex(int row, int column) {
+        return (row / 3) * 3 + column / 3;
     }
 
     /**
      * Gets the entire fields of a column.
-     * @param x Represents the x coordinate (column).
+     * @param column Represents the x coordinate (column).
      * @return Returns an entire list of fields on a column.
      * @throws Exception
      */
-    public Column getColumn(int x) throws Exception {
+    public Column getColumn(int column) throws Exception {
         Field[] fields = new Field[DIMENSION];
         for (int i = 0; i < DIMENSION; i++) {
-            fields[i] = this.board.get(x).get(i);
+            fields[i] = this.board.get(i).get(column);
         }
 
         return new Column(Arrays.asList(fields));
@@ -107,14 +107,14 @@ public class Board {
 
     /**
      * Gets the entire fields of a row.
-     * @param y Represents the y coordinate (row).
+     * @param row Represents the x coordinate (row).
      * @return Returns an entire list of fields on a row.
      * @throws Exception
      */
-    public Row getRow(int y) throws Exception {
+    public Row getRow(int row) throws Exception {
         Field[] fields = new Field[DIMENSION];
         for (int i = 0; i < DIMENSION; i++) {
-            fields[i] = this.board.get(i).get(y);
+            fields[i] = this.board.get(row).get(i);
         }
 
         return new Row(Arrays.asList(fields));
@@ -122,41 +122,41 @@ public class Board {
 
     /**
      * Gets the value of the field.
-     * @param x Represents the x coordinate (column).
-     * @param y Represents the y coordinate (row).
+     * @param row Represents the y coordinate (row).
+     * @param column Represents the x coordinate (column).
      * @return Returns the value of the field.
      * @throws Exception
      */
-    public int get(int x, int y) throws Exception {
-        if (x < 0 || x > DIMENSION) {
-            throw new Exception("Invalid x index to get a value.");
+    public int get(int row, int column) throws Exception {
+        if (row < 0 || row > DIMENSION) {
+            throw new Exception("Invalid row index to get a value.");
         }
-        if (y < 0 || y > DIMENSION) {
-            throw new Exception("Invalid y index to get a value.");
+        if (column < 0 || column > DIMENSION) {
+            throw new Exception("Invalid column index to get a value.");
         }
 
-        return this.board.get(x).get(y).getValue();
+        return this.board.get(row).get(column).getValue();
     }
 
     /**
      * Sets the value on a field.
-     * @param x Represents the x coordinate (column).
-     * @param y Represents the y coordinate (row).
+     * @param row Represents the y coordinate (row).
+     * @param column Represents the y coordinate (column).
      * @param value The new value that needs to be set.
      * @throws Exception
      */
-    public void set(int x, int y, int value) throws Exception {
-        if (x < 0 || x > DIMENSION) {
-            throw new Exception("Invalid x index to set a value.");
+    public void set(int row, int column, int value) throws Exception {
+        if (row < 0 || row > DIMENSION) {
+            throw new Exception("Invalid row index to set a value.");
         }
-        if (y < 0 || y > DIMENSION) {
-            throw new Exception("Invalid y index");
+        if (column < 0 || column > DIMENSION) {
+            throw new Exception("Invalid column index to set a value.");
         }
         if (value < 0 || value > DIMENSION)  {
-            throw new Exception("Invalid value");
+            throw new Exception("Invalid value.");
         }
 
-        this.board.get(x).get(y).setValue(value);
+        this.board.get(row).get(column).setValue(value);
     }
 
     /**
@@ -175,9 +175,9 @@ public class Board {
      * Clears and sets every value to 0 of every field on the current board.
      */
     public void clear() {
-        for (int x = 0; x < DIMENSION; x++) {
-            for (int y = 0; y < DIMENSION; y++) {
-                this.board.get(x).set(y, new Field());
+        for (int row = 0; row < DIMENSION; row++) {
+            for (int column = 0; column < DIMENSION; column++) {
+                this.board.get(row).set(column, new Field());
             }
         }
     }
@@ -195,10 +195,10 @@ public class Board {
      */
     public Board clone() {
         Board board = new Board();
-        for (int x = 0; x < DIMENSION; x++) {
-            for (int y = 0; y < DIMENSION; y++) {
+        for (int row = 0; row < DIMENSION; row++) {
+            for (int column = 0; column < DIMENSION; column++) {
                 try {
-                    board.set(x, y, this.getField(x, y).getValue());
+                    board.set(row, column, this.getField(row, column).getValue());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
