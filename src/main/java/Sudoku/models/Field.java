@@ -9,21 +9,21 @@ public class Field {
         this.value = 0;
     }
 
-    /*
+    /**
      * Gets the value of Field.
      */
     public int getValue() {
         return this.value;
     }
 
-    /*
+    /**
      * Sets the value of Field.
      */
     public void setValue(int value) {
         this.value = value;
     }
 
-    /*
+    /**
      * Checks whether the object is equal to this
      * @Param object The object that wants to get checked with the current field.
      */

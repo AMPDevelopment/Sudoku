@@ -1,6 +1,5 @@
 package Sudoku.models;
 
-import Sudoku.backend.backtrack.Remover;
 import Sudoku.backend.backtrack.Solver;
 
 import java.util.Arrays;
@@ -128,10 +127,10 @@ public class Board {
      * @throws Exception
      */
     public int get(int row, int column) throws Exception {
-        if (row < 0 || row > DIMENSION) {
+        if (row < 0 || row > DIMENSION - 1) {
             throw new Exception("Invalid row index to get a value.");
         }
-        if (column < 0 || column > DIMENSION) {
+        if (column < 0 || column > DIMENSION - 1) {
             throw new Exception("Invalid column index to get a value.");
         }
 
@@ -146,17 +145,21 @@ public class Board {
      * @throws Exception
      */
     public void set(int row, int column, int value) throws Exception {
-        if (row < 0 || row > DIMENSION) {
+        if (row < 0 || row > DIMENSION - 1) {
             throw new Exception("Invalid row index to set a value.");
         }
-        if (column < 0 || column > DIMENSION) {
+        if (column < 0 || column > DIMENSION - 1) {
             throw new Exception("Invalid column index to set a value.");
         }
         if (value < 0 || value > DIMENSION)  {
             throw new Exception("Invalid value.");
         }
 
+        int temp = this.board.get(row).get(column).getValue();
         this.board.get(row).get(column).setValue(value);
+        if (checkBoard(row, column)) {
+            this.board.get(row).get(column).setValue(temp);
+        }
     }
 
     /**
@@ -167,16 +170,12 @@ public class Board {
         new Solver(this);
     }
 
-    public void remover(int amountToRemove) throws Exception {
-        new Remover(this, amountToRemove);
-    }
-
     /**
      * Clears and sets every value to 0 of every field on the current board.
      */
     public void clear() {
-        for (int row = 0; row < DIMENSION; row++) {
-            for (int column = 0; column < DIMENSION; column++) {
+        for (int row = 0; row < DIMENSION - 1; row++) {
+            for (int column = 0; column < DIMENSION - 1; column++) {
                 this.board.get(row).set(column, new Field());
             }
         }
@@ -190,13 +189,26 @@ public class Board {
     }
 
     /**
+     * Checks whether the value of the fields is valid or not.
+     * @param row Represents the y coordinate (row).
+     * @param column Represents the x coordinate (column).
+     * @return Returns whether the value is valid or not.
+     * @throws Exception
+     */
+    private boolean checkBoard(int row, int column) throws Exception {
+        return !getRow(row).verify()
+                || !getColumn(column).verify()
+                || !getSector(row, column).verify();
+    }
+
+    /**
      * Clones this board.
      * @return Returns a cloned version of this board.
      */
     public Board clone() {
         Board board = new Board();
-        for (int row = 0; row < DIMENSION; row++) {
-            for (int column = 0; column < DIMENSION; column++) {
+        for (int row = 0; row < DIMENSION - 1; row++) {
+            for (int column = 0; column < DIMENSION - 1; column++) {
                 try {
                     board.set(row, column, this.getField(row, column).getValue());
                 } catch (Exception e) {

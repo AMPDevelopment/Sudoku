@@ -10,7 +10,7 @@ import javax.swing.*;
 import static Sudoku.models.Board.DIMENSION;
 
 public class Sudoku implements ActionListener{
-    JButton buttonCheck, buttonSolve, buttonGenerate, buttonClear;
+    JMenuItem buttonCheck, buttonSolve, buttonGenerate, buttonClear;
     JTextField[][] fields;
 
     private Board board;
@@ -21,41 +21,35 @@ public class Sudoku implements ActionListener{
     }
 
     private void initGui() {
-        JFrame newJFrame = new JFrame();
-        newJFrame.setTitle("Sudoku");
-        newJFrame.setLayout(new GridLayout(10,9));
-        newJFrame.setSize(400,440);
+        JFrame frame = new JFrame();
+        frame.setTitle("Sudoku");
+        frame.setLayout(new GridLayout(9,9));
+        frame.setSize(540,540);
 
-        JPanel panel = new JPanel();
+        fields = new JTextField[DIMENSION - 1][DIMENSION - 1];
 
-        fields = new JTextField[9][9];
-
-        for (int row = 0; row < 9; row++){
-            for (int column = 0; column < 9; column++){
+        for (int row = 0; row < DIMENSION - 1; row++){
+            for (int column = 0; column < DIMENSION - 1; column++){
                 fields[row][column] = new JTextField();
-                newJFrame.add(fields[row][column]);
+                frame.add(fields[row][column]);
                 fields[row][column].setText(this.board.getBoard().get(row).get(column).toString());
             }
         }
 
-        buttonCheck = new JButton("Check");
-        panel.add(buttonCheck);
+        JMenuBar menuBar = new JMenuBar();
 
-        buttonSolve = new JButton("Solve");
-        panel.add(buttonSolve);
+        buttonCheck = new JMenuItem("Check");
+        buttonSolve = new JMenuItem("Solve");
+        buttonGenerate = new JMenuItem("Generate");
+        buttonClear = new JMenuItem("Clear");
 
-        buttonGenerate = new JButton("Generate");
-        panel.add(buttonGenerate);
+        menuBar.add(buttonCheck);
+        menuBar.add(buttonSolve);
+        menuBar.add(buttonGenerate);
+        menuBar.add(buttonClear);
 
-        buttonClear = new JButton("Clear");
-        panel.add(buttonClear);
-
-        newJFrame.add(buttonCheck);
-        newJFrame.add(buttonSolve);
-        newJFrame.add(buttonClear);
-        newJFrame.add(buttonGenerate);
-        newJFrame.add(panel);
-        newJFrame.setVisible(true);
+        frame.setJMenuBar(menuBar);
+        frame.setVisible(true);
 
         buttonSolve.addActionListener(this);
         buttonClear.addActionListener(this);
@@ -63,34 +57,29 @@ public class Sudoku implements ActionListener{
     }
 
     private void check() {
-
+        // Todo: Check the board whether it's correct or not.
     }
 
     private void solve() throws Exception {
-        int amountToRemove = 0;
-        for (int row = 0; row < 9; row++){
-            for (int column = 0; column < 9; column++){
-                if (fields[row][column].getText().contains("0")) {
-                    amountToRemove++;
-                }
+        for (int row = 0; row < DIMENSION - 1; row++){
+            for (int column = 0; column < DIMENSION - 1; column++){
                 this.board.set(row, column, Integer.parseInt(fields[row][column].getText()));
             }
         }
-        System.out.println(amountToRemove);
 
         this.board.solve();
-        this.board.remover(amountToRemove);
 
-        for (int row = 0; row < DIMENSION; row++){
-            for (int column = 0; column < DIMENSION; column++){
+        for (int row = 0; row < DIMENSION - 1; row++){
+            for (int column = 0; column < DIMENSION - 1; column++){
                 fields[row][column].setText(this.board.getBoard().get(row).get(column).toString());
+                fields[row][column].setBackground(Color.orange);
             }
         }
     }
     private void clear() {
         this.board.clear();
-        for (int row = 0; row < 9; row++){
-            for (int column = 0; column < 9; column++){
+        for (int row = 0; row < DIMENSION - 1; row++){
+            for (int column = 0; column <  DIMENSION - 1; column++){
                 fields[row][column].setText(this.board.getBoard().get(row).get(column).toString());
                 fields[row][column].setBackground(Color.white);
             }
@@ -98,9 +87,10 @@ public class Sudoku implements ActionListener{
     }
 
     private void generate() {
-        this.board.generate(); // Todo: Generate random game
-        for (int row = 0; row < 9; row++){
-            for (int column = 0; column < 9; column++){
+        this.board.generate();
+        for (int row = 0; row < DIMENSION - 1; row++){
+            for (int column = 0; column < DIMENSION - 1; column++){
+                // Todo: Generate random game
             }
         }
     }
