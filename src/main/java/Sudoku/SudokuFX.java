@@ -87,7 +87,7 @@ public class SudokuFX {
         for (int row = 0; row < DIMENSION; row++) {
             for (int column = 0; column < DIMENSION; column++) {
                 int value = Integer.parseInt(fields.get(row).get(column).getText());
-                this.board.getBoard().get(row).get(column).setValue(value);
+                this.board.set(row, column, value);
             }
         }
 

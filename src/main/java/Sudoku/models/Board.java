@@ -119,7 +119,7 @@ public class Board implements Cloneable, Serializable {
     public Row getRow(int row) throws Exception {
         List<Field> fields = initNineFields();
 
-        for (int i = 0; i < DIMENSION - 1; i++) {
+        for (int i = 0; i < DIMENSION; i++) {
             fields.get(i).setValue(this.board.get(row).get(i).getValue());
         }
 
@@ -148,10 +148,10 @@ public class Board implements Cloneable, Serializable {
      * @throws Exception
      */
     public int get(int row, int column) throws Exception {
-        if (row < 0 || row > DIMENSION - 1) {
+        if (row < 0 || row >= DIMENSION) {
             throw new Exception("Invalid row index to get a value.");
         }
-        if (column < 0 || column > DIMENSION - 1) {
+        if (column < 0 || column >= DIMENSION) {
             throw new Exception("Invalid column index to get a value.");
         }
 
@@ -166,10 +166,10 @@ public class Board implements Cloneable, Serializable {
      * @throws Exception
      */
     public void set(int row, int column, int value) throws Exception {
-        if (row < 0 || row > DIMENSION - 1) {
+        if (row < 0 || row >= DIMENSION) {
             throw new Exception("Invalid row index to set a value.");
         }
-        if (column < 0 || column > DIMENSION - 1) {
+        if (column < 0 || column >= DIMENSION) {
             throw new Exception("Invalid column index to set a value.");
         }
         if (value < 0 || value > DIMENSION)  {
@@ -257,8 +257,8 @@ public class Board implements Cloneable, Serializable {
      */
     public Board clone() {
         Board clonedBoard = new Board();
-        for (int row = 0; row < DIMENSION - 1; row++) {
-            for (int column = 0; column < DIMENSION - 1; column++) {
+        for (int row = 0; row < DIMENSION; row++) {
+            for (int column = 0; column < DIMENSION; column++) {
                 try {
                     clonedBoard.set(row, column, this.getField(row, column).getValue());
                 } catch (Exception e) {

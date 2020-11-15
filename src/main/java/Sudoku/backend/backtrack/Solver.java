@@ -5,8 +5,14 @@ import Sudoku.models.Board;
 import static Sudoku.models.Board.DIMENSION;
 
 public class Solver {
+    private Board board;
+    private Board copyBoard;
+
     public Solver(Board board) throws Exception {
-        if (this.solver(board)) {
+        this.board = board;
+        this.copyBoard = board.clone();
+
+        if (this.solver()) {
             System.out.println("Solved");
         }
         else {
@@ -14,15 +20,15 @@ public class Solver {
         }
     }
 
-    private boolean isSafe(Board board, int row, int column, int value) throws Exception {
+    private boolean isSafe(int row, int column, int value) throws Exception {
         for (int rowClash = 0; rowClash < DIMENSION; rowClash++) {
-            if (board.get(row, rowClash) == value) {
+            if (this.board.get(row, rowClash) == value) {
                 return false;
             }
         }
 
         for (int columnClash = 0; columnClash < DIMENSION; columnClash++) {
-            if (board.get(columnClash, column) == value) {
+            if (this.board.get(columnClash, column) == value) {
                 return false;
             }
         }
@@ -33,7 +39,7 @@ public class Solver {
 
         for (int rowBox = boxRowStart; rowBox < boxRowStart + boxClash; rowBox++) {
             for (int columnBox = boxColumnStart; columnBox < boxColumnStart + boxClash; columnBox++) {
-                if (board.get(rowBox, columnBox) == value) {
+                if (this.board.get(rowBox, columnBox) == value) {
                     return false;
                 }
             }
@@ -42,14 +48,14 @@ public class Solver {
         return true;
     }
 
-    private boolean solver(Board board) throws Exception {
+    private boolean solver() throws Exception {
         int row = -1;
         int column = -1;
         boolean isEmpty = true;
 
         for (int rowCoordinate = 0; rowCoordinate < DIMENSION; rowCoordinate++) {
             for (int columnCoordinate = 0; columnCoordinate < DIMENSION; columnCoordinate++) {
-                if (board.get(rowCoordinate, columnCoordinate) == 0) {
+                if (this.board.get(rowCoordinate, columnCoordinate) == 0) {
                     row = rowCoordinate;
                     column = columnCoordinate;
                     isEmpty = false;
@@ -66,9 +72,9 @@ public class Solver {
         }
 
         for (int value = 1; value <= DIMENSION; value++) {
-            if (isSafe(board, row, column, value)) {
+            if (isSafe(row, column, value)) {
                 board.set(row, column, value);
-                if (solver(board)) {
+                if (solver()) {
                     return true;
                 }
                 else {
