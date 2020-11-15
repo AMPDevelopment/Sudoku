@@ -7,7 +7,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -92,13 +91,16 @@ public class SudokuFX {
         }
 
         this.board.solve();
-
         this.reset(false);
     }
 
-    private void reset(boolean fullReset) {
-        if (fullReset) {
+    private void reset(boolean clear) {
+        if (clear) {
             this.board.clear();
+        }
+
+        if (!this.gridPane.getChildren().isEmpty()) {
+            this.gridPane.getChildren().removeAll(fields);
         }
 
         for (int row = 0; row < DIMENSION; row++) {
@@ -108,17 +110,12 @@ public class SudokuFX {
                 fields.get(row).get(column).setPrefWidth(60);
                 fields.get(row).get(column).setPrefHeight(60);
                 fields.get(row).get(column).setText(field.toString());
-
-                if (fullReset) {
-                    fields.get(row).get(column).setEditable(true);
-                }
-                else {
-                    fields.get(row).get(column).setEditable(false);
-                }
-
+                fields.get(row).get(column).setAlignment(Pos.CENTER);
+                fields.get(row).get(column).setTextFormatter(new TextFormatter<>(change ->
+                        (change.getControlNewText().matches("([0-9]$)?")) ? change : null));
 
                 if (this.board.getSectorIndex(row, column) % 2 == 0) {
-                    if (fullReset) {
+                    if (clear) {
                         fields.get(row).get(column).setStyle("-fx-control-inner-background: #1C252E");
                     }
                     else {
@@ -126,7 +123,7 @@ public class SudokuFX {
                     }
                 }
                 else {
-                    if (fullReset) {
+                    if (clear) {
                         fields.get(row).get(column).setStyle("-fx-control-inner-background: #f9f9f9");
                     }
                     else {
@@ -134,11 +131,14 @@ public class SudokuFX {
                     }
                 }
 
-                fields.get(row).get(column).setTextFormatter(new TextFormatter<>(change ->
-                        (change.getControlNewText().matches("([0-9]$)?")) ? change : null));
+                if (clear) {
+                    fields.get(row).get(column).setEditable(true);
+                }
+                else {
+                    fields.get(row).get(column).setEditable(false);
+                }
 
-                fields.get(row).get(column).setAlignment(Pos.CENTER);
-                gridPane.add(fields.get(row).get(column), column, row);
+                this.gridPane.add(fields.get(row).get(column), column, row);
             }
         }
     }
