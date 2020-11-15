@@ -1,11 +1,13 @@
 package Sudoku.models;
 
 import Sudoku.backend.backtrack.Solver;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-public class Board {
+public class Board implements Cloneable, Serializable {
     private List<List<Field>> board;
 
     public static final int DIMENSION = 9;
@@ -19,15 +21,15 @@ public class Board {
      */
     private void initBoard() {
         this.board = Arrays.asList(
-            Arrays.asList(new Field[DIMENSION]),
-            Arrays.asList(new Field[DIMENSION]),
-            Arrays.asList(new Field[DIMENSION]),
-            Arrays.asList(new Field[DIMENSION]),
-            Arrays.asList(new Field[DIMENSION]),
-            Arrays.asList(new Field[DIMENSION]),
-            Arrays.asList(new Field[DIMENSION]),
-            Arrays.asList(new Field[DIMENSION]),
-            Arrays.asList(new Field[DIMENSION])
+                Arrays.asList(new Field[DIMENSION]),
+                Arrays.asList(new Field[DIMENSION]),
+                Arrays.asList(new Field[DIMENSION]),
+                Arrays.asList(new Field[DIMENSION]),
+                Arrays.asList(new Field[DIMENSION]),
+                Arrays.asList(new Field[DIMENSION]),
+                Arrays.asList(new Field[DIMENSION]),
+                Arrays.asList(new Field[DIMENSION]),
+                Arrays.asList(new Field[DIMENSION])
         );
 
         this.clear();
@@ -74,18 +76,21 @@ public class Board {
         int boxColumn = (sectorIndex % 3) * 3;
         int fieldIndex = 0;
 
-        Field[] fields = new Field[DIMENSION];
-        for (int i = boxRow; i <= boxRow + 2; i++) {
-            for (int j = boxColumn; j <= boxColumn +2; j++) {
-                fields[fieldIndex] = this.board.get(i).get(j);
+        List<Field> fields = initNineFields();
+
+        for (int rowIndex = boxRow; rowIndex < boxRow + 2; rowIndex++) {
+            for (int columnIndex = boxColumn; columnIndex < boxColumn +2; columnIndex++) {
+                Field field = this.board.get(rowIndex).get(columnIndex);
+                fields.get(fieldIndex).setValue(field.getValue());
+                fields.get(fieldIndex).setIsEditable(field.getIsEditable());
                 fieldIndex++;
             }
         }
 
-        return new Sector(Arrays.asList(fields));
+        return new Sector(fields);
     }
 
-    private int getSectorIndex(int row, int column) {
+    public int getSectorIndex(int row, int column) {
         return (row / 3) * 3 + column / 3;
     }
 
@@ -96,12 +101,13 @@ public class Board {
      * @throws Exception
      */
     public Column getColumn(int column) throws Exception {
-        Field[] fields = new Field[DIMENSION];
+        List<Field> fields = initNineFields();
+
         for (int i = 0; i < DIMENSION; i++) {
-            fields[i] = this.board.get(i).get(column);
+            fields.get(i).setValue(this.board.get(i).get(column).getValue());
         }
 
-        return new Column(Arrays.asList(fields));
+        return new Column(fields);
     }
 
     /**
@@ -111,12 +117,27 @@ public class Board {
      * @throws Exception
      */
     public Row getRow(int row) throws Exception {
-        Field[] fields = new Field[DIMENSION];
-        for (int i = 0; i < DIMENSION; i++) {
-            fields[i] = this.board.get(row).get(i);
+        List<Field> fields = initNineFields();
+
+        for (int i = 0; i < DIMENSION - 1; i++) {
+            fields.get(i).setValue(this.board.get(row).get(i).getValue());
         }
 
-        return new Row(Arrays.asList(fields));
+        return new Row(fields);
+    }
+
+    private List<Field> initNineFields() {
+        return Arrays.asList(
+                new Field(),
+                new Field(),
+                new Field(),
+                new Field(),
+                new Field(),
+                new Field(),
+                new Field(),
+                new Field(),
+                new Field()
+        );
     }
 
     /**
@@ -174,8 +195,8 @@ public class Board {
      * Clears and sets every value to 0 of every field on the current board.
      */
     public void clear() {
-        for (int row = 0; row < DIMENSION - 1; row++) {
-            for (int column = 0; column < DIMENSION - 1; column++) {
+        for (int row = 0; row < DIMENSION; row++) {
+            for (int column = 0; column < DIMENSION; column++) {
                 this.board.get(row).set(column, new Field());
             }
         }
@@ -201,22 +222,51 @@ public class Board {
                 || !getSector(row, column).verify();
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null) {
+            return false;
+        }
+        if (!(object instanceof Board)) {
+            return false;
+        }
+
+        Board that = (Board) object;
+        return new EqualsBuilder().append(that.board, this.board).isEquals();
+    }
+
+    public boolean isValid() throws Exception {
+        for (int row = 0; row < DIMENSION; row++) {
+            for (int column = 0; column < DIMENSION; column++) {
+                if (this.checkBoard(row, column)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+
     /**
      * Clones this board.
      * @return Returns a cloned version of this board.
      */
     public Board clone() {
-        Board board = new Board();
+        Board clonedBoard = new Board();
         for (int row = 0; row < DIMENSION - 1; row++) {
             for (int column = 0; column < DIMENSION - 1; column++) {
                 try {
-                    board.set(row, column, this.getField(row, column).getValue());
+                    clonedBoard.set(row, column, this.getField(row, column).getValue());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
 
-        return board;
+        return clonedBoard;
     }
 }

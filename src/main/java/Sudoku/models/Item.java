@@ -15,8 +15,8 @@ public class Item {
             throw new Exception("Invalid size of the object");
         }
 
-        this.object = Arrays.asList(new Field[DIMENSION]);
-        for (int i = 0; i < DIMENSION; i++) {
+        this.object = Arrays.asList(new Field[DIMENSION - 1]);
+        for (int i = 0; i < DIMENSION - 1; i++) {
             this.object.set(i, table.get(i));
         }
     }

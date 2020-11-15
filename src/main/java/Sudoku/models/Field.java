@@ -4,6 +4,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 
 public class Field {
     private int value;
+    private boolean isEditable = false;
 
     public Field() {
         this.value = 0;
@@ -24,10 +25,25 @@ public class Field {
     }
 
     /**
+     * Gets whether the field is editable or not.
+     */
+    public boolean getIsEditable() {
+        return this.isEditable;
+    }
+
+    /**
+     * Sets whether the field is editable or not.
+     */
+    public void setIsEditable(boolean isEditable) {
+        this.isEditable = isEditable;
+    }
+
+    /**
      * Checks whether the object is equal to this
      * @Param object The object that wants to get checked with the current field.
      */
-    public boolean equal(Object object) {
+    @Override
+    public boolean equals(Object object) {
         if (this == object) {
             return true;
         }
