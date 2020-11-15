@@ -20,6 +20,14 @@ public class Solver {
         }
     }
 
+    /**
+     * Checks whether the provided value is valid or not.
+     * @param row Represents the row coordinate.
+     * @param column Represents the column coordinate.
+     * @param value Represents the value of the provided coordinates.
+     * @return Returns true or false whether the value is valid or not.
+     * @throws Exception
+     */
     private boolean isSafe(int row, int column, int value) throws Exception {
         for (int rowClash = 0; rowClash < DIMENSION; rowClash++) {
             if (this.board.get(row, rowClash) == value) {
@@ -48,41 +56,32 @@ public class Solver {
         return true;
     }
 
+    /**
+     * Backtracking the board.
+     * @return Returns a completed sudoku.
+     * @throws Exception
+     */
     private boolean solver() throws Exception {
-        int row = -1;
-        int column = -1;
-        boolean isEmpty = true;
+        for (int row = 0; row < DIMENSION; row++) {
+            for (int column = 0; column < DIMENSION; column++) {
+                if (this.board.get(row, column) == 0) {
+                    for (int value = 1; value <= DIMENSION; value++) {
+                        if (isSafe(row, column, value)) {
+                            this.board.set(row, column, value);
+                            if (solver()) {
+                                return true;
+                            }
+                            else {
+                                this.board.set(row, column, 0);
+                            }
+                        }
+                    }
 
-        for (int rowCoordinate = 0; rowCoordinate < DIMENSION; rowCoordinate++) {
-            for (int columnCoordinate = 0; columnCoordinate < DIMENSION; columnCoordinate++) {
-                if (this.board.get(rowCoordinate, columnCoordinate) == 0) {
-                    row = rowCoordinate;
-                    column = columnCoordinate;
-                    isEmpty = false;
-                    break;
-                }
-                if (!isEmpty) {
-                    break;
-                }
-            }
-        }
-
-        if (isEmpty) {
-            return true;
-        }
-
-        for (int value = 1; value <= DIMENSION; value++) {
-            if (isSafe(row, column, value)) {
-                board.set(row, column, value);
-                if (solver()) {
-                    return true;
-                }
-                else {
-                    board.set(row, column, 0);
+                    return false;
                 }
             }
         }
 
-        return false;
+        return true;
     }
 }

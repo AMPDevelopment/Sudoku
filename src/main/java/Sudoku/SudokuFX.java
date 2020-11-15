@@ -80,6 +80,7 @@ public class SudokuFX {
 
     private void newGame() {
         System.out.println("New game");
+        // Todo: Create a new game
     }
 
     private void solve() throws Exception {
@@ -107,38 +108,41 @@ public class SudokuFX {
             for (int column = 0; column < DIMENSION; column++) {
                 Field field = this.board.getBoard().get(row).get(column);
                 fields.get(row).set(column, new TextField());
-                fields.get(row).get(column).setPrefWidth(60);
-                fields.get(row).get(column).setPrefHeight(60);
-                fields.get(row).get(column).setText(field.toString());
-                fields.get(row).get(column).setAlignment(Pos.CENTER);
-                fields.get(row).get(column).setTextFormatter(new TextFormatter<>(change ->
+                TextField textField = fields.get(row).get(column);
+                textField.setPrefWidth(60);
+                textField.setPrefHeight(60);
+                textField.setText(field.toString());
+                textField.setAlignment(Pos.CENTER);
+                textField.setTextFormatter(new TextFormatter<>(change ->
                         (change.getControlNewText().matches("([0-9]$)?")) ? change : null));
 
                 if (this.board.getSectorIndex(row, column) % 2 == 0) {
                     if (clear) {
-                        fields.get(row).get(column).setStyle("-fx-control-inner-background: #1C252E");
+                        textField.setStyle("-fx-control-inner-background: #1C252E");
                     }
                     else {
-                        fields.get(row).get(column).setStyle("-fx-control-inner-background: #1C252E;-fx-border-color: #4CD964;-fx-border-width: 2px;-fx-border-radius: 5px");
+                        textField.setStyle("-fx-control-inner-background: #1C252E;-fx-border-color: #4CD964;-fx-border-width: 2px;-fx-border-radius: 5px");
+
                     }
                 }
                 else {
                     if (clear) {
-                        fields.get(row).get(column).setStyle("-fx-control-inner-background: #f9f9f9");
+                        textField.setStyle("-fx-control-inner-background: #f9f9f9");
                     }
                     else {
-                        fields.get(row).get(column).setStyle("-fx-control-inner-background: #f9f9f9;-fx-border-color: #4CD964;-fx-border-width: 2px;-fx-border-radius: 5px");
+                        textField.setStyle("-fx-control-inner-background: #f9f9f9;-fx-border-color: #4CD964;-fx-border-width: 2px;-fx-border-radius: 5px");
                     }
                 }
 
                 if (clear) {
-                    fields.get(row).get(column).setEditable(true);
+                    textField.setEditable(true);
                 }
                 else {
-                    fields.get(row).get(column).setEditable(false);
+                    textField.setEditable(false);
+
                 }
 
-                this.gridPane.add(fields.get(row).get(column), column, row);
+                this.gridPane.add(textField, column, row);
             }
         }
     }
